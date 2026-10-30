@@ -1,7 +1,8 @@
 # Workflow: retention-audit
 
 Review an existing game's loops and hooks against player incentives. Load
-`references/game-loops.md` and `references/player-incentives.md`.
+`references/game-loops.md`, `references/player-incentives.md` and
+`references/retention-psychology.md`.
 
 ## Phases
 
@@ -16,8 +17,11 @@ Review an existing game's loops and hooks against player incentives. Load
 3. **Stall points.** Where pacing slows sharply, where progression stops
    unlocking new things, where content runs out.
 4. **Hook inventory** per time scale (first minute, session, days, long term,
-   social). For each: the motivation it serves, the player-facing reason, and
-   whether it is purely pressure (guilt, fake urgency, punishing absence).
+   social). For each: the principle it uses (`retention-psychology.md`), the
+   player-facing reason, and whether it is the fair or the manipulative
+   version (guilt, fake urgency, punishing absence).
+   Also map the game's building blocks (`game-loops.md`) and flag weak
+   blocks, especially missing tension or a missing release.
 5. **Data.** What analytics are tracked (funnels, D1/D7/D30, session length,
    progression). If none, recommend the minimum set.
 6. **Ethics and policy check** on hooks involving paid randomness,

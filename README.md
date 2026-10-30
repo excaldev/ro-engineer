@@ -66,8 +66,12 @@ Each design phase stops and asks for approval before the next.
 Some claims age quickly. Re-check these periodically and update the
 reference files:
 
-- Luau syntax and features (`const`, type solver changes) against the Luau
-  release notes: `references/luau-modern.md`, `references/luau-types.md`.
+- Luau features that may have shipped since writing (`const`, new type
+  solver behaviour) against the Luau release notes. All experiences share one
+  Luau version, so this is about release timing, not per-game versions:
+  `references/luau-modern.md`, `references/luau-types.md`.
+- Popular-game snapshot (which hits lead the niche and how they work):
+  `references/market-references.md`.
 - Community library names and maintenance status (ECS, networking, state,
   cleanup, data): `references/ecs.md` and others.
 - Roblox policies on paid random items, odds disclosure and time-limited offers:

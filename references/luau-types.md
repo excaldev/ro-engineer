@@ -3,10 +3,12 @@
 Strict mode only helps if public surfaces are typed. Type the edges (module
 APIs, remote payloads, config), let inference handle locals.
 
-**[verify]** Roblox has been rolling out a new type solver. Some behaviours
-(refinements, generic inference, type functions) differ between the old and
-new solver. Check which one the project uses (Studio beta settings / Luau
-release notes) when something type-checks differently than expected.
+**[verify]** Roblox has been rolling out a new type solver. It only affects
+type checking in Studio (analysis), never runtime: every experience runs the
+same Luau. Some checks (refinements, generic inference, type functions) differ
+between the old and new solver, and which one you get can depend on a Studio
+beta setting per developer. When something type-checks differently than
+expected, check which solver is active and the Luau release notes.
 
 ## export type
 
@@ -46,7 +48,7 @@ end
 ```
 
 Declare methods with `.` and an explicit `self: Wallet` parameter. The colon
-form also works but types `self` less reliably in some solver versions.
+form also works but the old solver types `self` less reliably.
 
 ## Generics
 
@@ -148,7 +150,7 @@ export type Service = {
 
 - `typeof(setmetatable(...))` must reference the metatable table itself, so
   declare `Class.__index = Class` before the `export type`.
-- Indexing a dictionary returns `T?` only in some solver versions; narrow
-  anyway.
+- Whether indexing a dictionary returns `T?` differs between the old and new
+  solver; narrow anyway.
 - Casting with `::` lies to the checker. Use it to *widen* or for known engine
   shapes (`:: Model`), not to skip validation.

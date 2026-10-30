@@ -33,10 +33,12 @@ then adapt every workflow to it.
 | User intent | Load |
 |---|---|
 | Plan a feature / break down work | `workflows/plan.md` + `templates/plan-template.md` |
-| Design the core loop / "what keeps players playing" | `workflows/design-game-loop.md` + `references/game-loops.md` + `references/player-incentives.md` + `templates/game-loop-template.md` |
-| Hooks, retention, onboarding, daily rewards | `references/player-incentives.md` + `references/live-ops-events.md` |
+| Design the core loop / "what keeps players playing" | `workflows/design-game-loop.md` + `references/game-loops.md` + `references/market-references.md` + `references/player-incentives.md` + `templates/game-loop-template.md` |
+| Break down a hit game / pick a reference / "what's my twist" | `references/game-loops.md` + `references/market-references.md` |
+| Hooks, retention, onboarding, daily rewards | `references/player-incentives.md` + `references/retention-psychology.md` + `references/live-ops-events.md` |
+| Why a feature keeps players / psychology of a mechanic | `references/retention-psychology.md` |
 | Progression, currency, upgrades, rebirth/prestige | `references/progression-economy.md` + `workflows/economy-audit.md` |
-| Review loops / retention | `workflows/retention-audit.md` + `references/player-incentives.md` |
+| Review loops / retention | `workflows/retention-audit.md` + `references/player-incentives.md` + `references/retention-psychology.md` |
 | Design a system / "how should I structure" | `workflows/design-system.md` + `references/system-design.md` + `references/pattern-selection.md` + `templates/design-doc-template.md` |
 | Implement an approved design or plan | `workflows/implement.md` + `references/luau-modern.md` + the pattern file the design names + `templates/module-template.md` |
 | Choose between patterns | `references/pattern-selection.md` |
@@ -65,9 +67,9 @@ implement.
 
 Code:
 - `--!strict` at the top of every module.
-- `local` for variables. Use `const` only if the target Luau version supports
-  it (check current Luau release notes); otherwise treat bindings as immutable
-  by convention.
+- `local` for variables. Use `const` only if it has shipped in Luau (every
+  experience runs the same Luau version; check the release notes); otherwise
+  treat bindings as immutable by convention.
 - `task.spawn` / `task.defer` / `task.delay` / `task.wait`, never the legacy
   `spawn` / `delay` / `wait`.
 - Generalized iteration (`for k, v in tbl do`) over `pairs` / `ipairs`.

@@ -1,5 +1,9 @@
 # Player incentives
 
+Overview of motivation, hooks and onboarding. For the psychology behind each
+principle, with matching in-game features, tuning knobs and the fair versus
+manipulative version of each, see `retention-psychology.md`.
+
 ## Motivation basics
 
 Players return for:

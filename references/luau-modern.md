@@ -1,8 +1,10 @@
 # Modern Luau
 
-Version-sensitive claims are marked **[verify]**. Re-check them against the
-Luau release notes (luau.org and the Roblox Creator Hub release notes) before
-relying on them.
+Roblox runs one Luau version for every experience; there is no per-game
+version to pick. Claims marked **[verify]** are about whether a feature has
+shipped yet (features sometimes reach Studio before live servers). Re-check
+them against the Luau release notes (luau.org and the Roblox Creator Hub
+release notes) before relying on them.
 
 ## File header
 
@@ -16,8 +18,8 @@ leave a comment saying why.
 ## Bindings
 
 - Always `local`. No globals; strict mode flags them.
-- `const` bindings: **[verify]** check whether your Luau/Studio version
-  supports a `const` keyword. If not, use `local` and treat values as
+- `const` bindings: **[verify]** check the release notes for whether a
+  `const` keyword has shipped. If not, use `local` and treat values as
   immutable by convention (UPPER_SNAKE for module-level constants).
 - Freeze shared config tables: `table.freeze(CONFIG)` (shallow; freeze nested
   tables too if they are shared).
