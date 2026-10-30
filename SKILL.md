@@ -1,6 +1,6 @@
 ---
 name: ro-engineer
-description: Roblox/Luau development and game design companion - planning, game loops and player incentives, system design and implementation. Covers modern Luau, strict typing, composition, OOP, ECS, state management, object pooling, client/server boundaries, progression and economy, and performance. Use for any Roblox, Luau or Studio coding or game design task.
+description: "Roblox/Luau coding and game design: game loops, retention, economy, system design, strict Luau, composition, OOP/ECS, pooling, networking, performance. Use for any Roblox or Studio task."
 user-invocable: true
 ---
 

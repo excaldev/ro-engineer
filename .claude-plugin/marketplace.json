@@ -1,0 +1,17 @@
+{
+  "name": "ro-engineer",
+  "description": "Roblox/Luau development and game design skills.",
+  "owner": {
+    "name": "excaldev",
+    "url": "https://github.com/excaldev"
+  },
+  "plugins": [
+    {
+      "name": "ro-engineer",
+      "source": "./",
+      "description": "Roblox/Luau development and game design skill: plan, design the loop, design the system, then implement.",
+      "category": "game-development",
+      "tags": ["roblox", "luau", "game-design"]
+    }
+  ]
+}
