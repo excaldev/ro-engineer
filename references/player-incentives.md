@@ -57,8 +57,8 @@ reason ("retention").
 - Show progress toward the next reward. Near-complete goals motivate
   finishing.
 - Reward effort and skill, not only time or spending.
-- Pity/guarantee systems on random drops reduce frustration (and may be
-  required for paid randomness; check policy).
+- Consider pity/guarantee systems to reduce frustration. Do not imply a
+  universal legal requirement; check current paid-randomness policy separately.
 - Make rewards visible to others when they are something to be proud of.
 
 ## Onboarding (first-time user experience)

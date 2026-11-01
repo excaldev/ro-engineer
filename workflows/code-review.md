@@ -1,32 +1,20 @@
-# Workflow: code-review
+# Review Roblox code
 
-Review Luau code and give a grade with specific fixes.
+Read affected scripts and relevant callers/configuration. Use exposed
+dependency/validation tools when helpful. Inspect these risks where applicable:
 
-## Phases
-
-1. **Read the code.** In `studio` mode, read scripts with `script_read` and
-   find related code with `script_grep`. In `rotex` mode, use
-   `validate_code`, `call_sites` and `dependency_map` for context.
-2. **Check each area:**
-
-| Area | Look for |
+| Area | Evidence to inspect |
 |---|---|
-| Security | Client-trusted values, missing validation, no rate limits, price from payload (SE-1, SE-4, SE-9) |
-| Cleanup | Unstored connections, uncancelled threads, per-player tables not cleared (SE-2, SE-16) |
-| Strict typing | Missing `--!strict`, untyped public API, `any` casts |
-| Modern Luau | Legacy `wait`/`spawn`/`delay`, `pairs`/`ipairs`, deprecated APIs |
-| Pattern fit | Over-engineering (ECS/state manager for small systems) or under-engineering (copy-pasted logic) |
-| Composition | Inheritance beyond one level, god objects, components reaching into each other |
-| Hot spots | Per-frame allocations, `GetDescendants` in loops, per-object Heartbeat connections |
-| Data | Saving per change, no session locking, no BindToClose |
-| Readability | Naming, module size, hardcoded tuning numbers |
+| Security | Runtime payload validation, server pricing/grants, legal state, rate limits |
+| Persistence | Atomic mutations, durable/idempotent receipts, retries, session ownership, migration |
+| Lifecycle | Resource ownership, external connections, delayed callbacks, player/character/stream-out teardown |
+| Integration | Existing API contracts, require/startup order, replication snapshots/resync |
+| Types/APIs | Configured checker results, unsafe casts, optional Instances, supported engine APIs |
+| Architecture | Fit with project and workload; unnecessary new abstractions |
+| Performance | Actual hot paths/profile; unbounded work or retention |
 
-3. **Grade A-F:**
-   - **A:** ship it; nits only.
-   - **B:** minor issues, no risk.
-   - **C:** real issues (leaks, missing types, perf) to fix soon.
-   - **D:** a HIGH-severity issue (leak, flooding, broken economy).
-   - **F:** a CRITICAL issue (exploit, data loss).
-4. **Output:** the grade, then findings ordered by severity, each with the
-   location, what is wrong, why it matters, and the fixed code. End with what
-   is done well (briefly).
+Do not flag pairs/ipairs, module return shape, inheritance depth, or a missing
+new framework merely for style. Report actionable findings by severity with
+location, failure scenario, consequence, and a specific fix. Distinguish
+observed failures from hypotheses. Grades and rewritten code are optional when
+requested/useful; a review does not claim runtime success.

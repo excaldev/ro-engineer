@@ -13,10 +13,11 @@ it is a large share of Roblox players.
 | Stats panel (Shift+F5 etc.) | FPS, ping, memory, physics |
 | Studio Device Emulator | Screen sizes, not real performance; test on a real phone |
 
-In `studio` mode, use `execute_luau` to count instances, parts and
-connections, and `get_console_output` to read benchmark prints.
+Use exposed Studio capabilities to count Instances/parts and read benchmark
+output. Instrument owned connections; there is no general Luau API to count
+all connections.
 
-## Common costs, biggest first
+## Candidate costs (rank from the measured workload)
 
 1. **Too many parts/instances and draw calls.** Merge static geometry into
    meshes, use `StreamingEnabled`, reduce unique materials/textures, cull
@@ -32,14 +33,15 @@ connections, and `get_console_output` to read benchmark prints.
    from the server, large payloads (`networking-remotes.md`).
 5. **Memory growth.** Leaks from connections and tables
    (`cleanup-lifecycle.md`).
-6. **UI.** Rebuilding UI every update, many `UIGradient`/`UIStroke` in lists,
+6. **UI.** Rebuilding UI every update, expensive effects in large lists,
    huge scrolling frames without virtualization.
-7. **Lighting/VFX.** Shadows on many lights, `Future` lighting on low-end,
+7. **Lighting/VFX.** Shadows on many lights, costly lighting settings,
    many active ParticleEmitters, high-res textures.
 
 ## Script hot-path rules
 
-- One update loop per system, not per object.
+- Consolidate per-object updates when profiling shows dispatch overhead;
+  preserve required ordering and stop inactive work.
 - Cache `GetService`, `FindFirstChild` results and config lookups outside
   loops.
 - Avoid allocating tables, closures and strings per frame in hot code.

@@ -1,8 +1,8 @@
 {
   "name": "ro-engineer",
   "displayName": "ro-engineer",
-  "version": "1.0.0",
-  "description": "Roblox/Luau development and game design skill: planning, game loops and player incentives, system design and implementation with modern strict Luau, composition, OOP, ECS, state, object pooling, client/server boundaries, economy and performance.",
+  "version": "1.0.1",
+  "description": "Project-aware Roblox/Luau engineering and optional gameplay design with security, lifecycle, and evidence-based validation.",
   "author": {
     "name": "excaldev",
     "url": "https://github.com/excaldev"
@@ -10,5 +10,13 @@
   "homepage": "https://github.com/excaldev/ro-engineer",
   "repository": "https://github.com/excaldev/ro-engineer",
   "license": "MIT",
-  "keywords": ["roblox", "luau", "game-design", "skill", "ecs", "object-pooling"]
+  "keywords": [
+    "roblox",
+    "luau",
+    "game-design",
+    "skill",
+    "ecs",
+    "object-pooling"
+  ],
+  "skills": "./"
 }

@@ -1,7 +1,8 @@
 # System design
 
-How to carve a game into modules with clear ownership, interfaces and data
-flow.
+Adapt module ownership and data flow to the existing project. Inspect startup,
+callers, persistence, remotes, and installed frameworks before changing structure.
+The layout and lifecycle below are examples, not migration requirements.
 
 ## Module boundaries
 
@@ -30,8 +31,8 @@ StarterPlayer/StarterPlayerScripts/
   Main.client.luau        bootstraps controllers
 ```
 
-Use one bootstrap script per side that requires modules and calls `init`
-then `start`, instead of many independent Scripts with hidden ordering.
+For new multi-service designs, a bootstrap with explicit ordering can help.
+Preserve the existing framework/startup model when extending a project.
 
 ## Lifecycle
 
@@ -40,8 +41,9 @@ init()   -- create state, no cross-system calls
 start()  -- connect events, call other systems
 ```
 
-Two phases avoid require-order bugs. Frameworks (Knit-style) do this for you,
-but a 20-line loader is enough.
+Two phases can separate dependency wiring from activation; they do not by
+themselves prevent require cycles or asynchronous startup races. Use the
+project's lifecycle contract and handle failures explicitly.
 
 ## Ownership map
 
@@ -96,11 +98,12 @@ The client may predict for feel, but the server result wins.
 
 - One data module owns load/save per player, with session locking (e.g.
   ProfileStore-style libraries; **[verify]** current recommendation).
-- Save on leave, on `game:BindToClose`, and periodically.
+- Use the persistence owner's periodic, leave, and shutdown save paths; avoid
+  duplicate competing saves. Handle failed requests and shutdown time limits.
 - Version the saved schema and migrate on load.
 - Respect DataStore request budgets; never save per change.
 
 ## Config and tuning
 
-Numbers live in typed, frozen config modules, not inline in logic, so tuning
-does not require code changes.
+Put designer-adjustable values in the existing config system. Typed/frozen
+tables are useful when compatible; ordinary constants do not need a new module.

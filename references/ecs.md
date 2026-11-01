@@ -1,103 +1,28 @@
-# ECS
+# ECS decisions and integration
 
-Entity Component System: entities are ids, components are plain data,
-systems are functions over queries. Read `composition.md` first; check
-`pattern-selection.md` to confirm ECS is justified.
+Check [pattern selection](pattern-selection.md) before introducing ECS. Existing
+ECS architecture, repeated bulk queries, clear scheduling needs, or measured
+hot-loop gains can justify it. Counts alone cannot. Include migration,
+debugging, and team familiarity.
 
-## When it is overkill
+Use installed library docs and versions. Jecs and Matter are examples, not
+guaranteed recommendations; verify APIs and maintenance before adoption. Avoid
+building a new ECS engine as a side effect of gameplay work.
 
-- Fewer than a few hundred entities.
-- Entities with very different, rich behaviour (bosses, vehicles).
-- A team unfamiliar with ECS on a short timeline.
-- Logic mostly event-driven (on touch, on click) rather than per-frame.
+- Define ordering (input, AI, movement, damage, cleanup, instance sync) and
+  appropriate RunService phases. Keep synchronous updates bounded; give slower
+  AI a deliberate rate/budget.
+- Follow query-mutation guarantees of the actual library. If mutation invalidates
+  iteration, defer structural changes to a defined command-buffer boundary.
+- Layout follows real access patterns. Archetypes and sparse sets have different
+  query/mutation costs; neither is universally fastest.
+- Own Instance links, ids, connections, and despawn paths. ECS data does not
+  replicate itself. Use snapshots/changes for required state, or events for
+  local cosmetics; gameplay remains server-authoritative.
+- Batch Instance updates when measured benefit supports it (`BulkMoveTo` for
+  suitable BaseParts). Pool render objects only when justified.
 
-## Libraries
-
-Evaluate before writing your own. **[verify]** maintenance status and API
-before adopting; this list ages quickly.
-
-| Library | Notes |
-|---|---|
-| Jecs | Archetype-based, fast, actively developed as of writing; supports relationships/pairs |
-| Matter | Mature, good debugger and docs, hooks-style API; check recent activity |
-| ECR | Sparse-set based, typed, performance-focused |
-
-Pick based on: typing quality, query speed for your shapes, debugging tools,
-documentation, and whether it is still maintained.
-
-## Entity lifecycle
-
-1. Spawn: create id, add initial components in one place (a factory).
-2. Live: systems add/remove components as state changes (`Stunned`,
-   `Burning`).
-3. Despawn: mark with a `Dead`/`Despawn` tag; a cleanup system at the end of
-   the frame removes the entity and releases any instance to its pool.
-
-Never despawn inside another system's query loop.
-
-## Component design
-
-- Small and single-purpose: `Position`, `Velocity`, `Health`, `Lifetime`.
-- Plain data only. No methods, no Instances unless it is the render link
-  component (`Renderable = { part: BasePart }`).
-- Tag components (no data) for filtering: `Enemy`, `Projectile`.
-- Avoid nested tables in hot components; flatten fields.
-
-## Storage choices (if writing your own)
-
-| Storage | Good for | Cost |
-|---|---|---|
-| Table per component keyed by entity id | Simple, flexible | Slower multi-component queries |
-| Sparse set (dense array + index map) | Fast iteration, fast add/remove | More code |
-| Archetypes (tables per component set) | Fastest multi-component queries | Expensive structural changes |
-
-## Systems and scheduling
-
-Run systems in a fixed, documented order, usually:
-
-```
-input -> AI/decisions -> movement/physics -> collision/damage -> lifetime/despawn -> render sync
-```
-
-- One scheduler drives all systems from one `RunService` event.
-- Systems take `dt` and the world; they do not yield.
-- Expensive, infrequent systems (AI retargeting) can run every N frames or
-  on a time budget.
-
-## Command buffers
-
-Queue structural changes (spawn, despawn, add/remove component) during
-iteration and apply them at a defined point (end of system or end of frame).
-This avoids iterator invalidation and order-dependent bugs.
-
-## Instance sync
-
-- Simulate in data; write to instances once per frame in a render-sync
-  system.
-- Batch transforms with `workspace:BulkMoveTo(parts, cframes,
-  Enum.BulkMoveMode.FireCFrameChanged)` for many parts.
-- On the server, consider not having instances at all for pure simulation and
-  replicating compact state to clients, who render.
-- Pool render instances (`object-pooling.md`).
-
-## Networking
-
-ECS state does not replicate on its own. Choose:
-- Replicate only the components clients need, via a snapshot/diff system and
-  remotes (see `networking-remotes.md`).
-- Or replicate spawn events with seeds and let clients simulate cosmetics
-  deterministically.
-
-## Debugging
-
-- Build an entity inspector (Matter ships one; others have community tools)
-  or a debug command that prints an entity's components.
-- Name entities in debug builds (a `DebugName` component).
-- Log structural changes behind a flag.
-
-## Measuring
-
-Benchmark the hot system against an OOP baseline with the same entity count on
-a low-end device. Use MicroProfiler labels (`debug.profilebegin` /
-`debug.profileend`) around each system. Keep ECS only if it wins
-meaningfully or simplifies the code.
+Benchmark equivalent behavior/counts/update rates, physics, rendering, and
+replication on target hardware. Record frame-time distribution, memory, and
+integration complexity; use MicroProfiler labels around systems. Do not credit
+ECS for gains caused by reducing gameplay fidelity or removing physics.

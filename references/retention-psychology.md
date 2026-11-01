@@ -8,6 +8,10 @@ and catch hooks that work only by pressure.
 onboarding, ethics guardrails). This file goes deeper on each principle.
 Examples refer to the games in `market-references.md`.
 
+Treat the named psychology effects as design hypotheses, not guaranteed
+causal explanations or quantified retention evidence. Test with the actual
+audience and preserve meaningful stopping points.
+
 Many Roblox players are children. Every principle below can be used fairly
 or manipulatively. Each one says which is which.
 

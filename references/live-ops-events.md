@@ -49,13 +49,14 @@ weekly update outperforms an irregular big one.
 
 - Drive event start/end and parameters from config so you can change them
   without a code change. Options: a config module plus a published update,
-  or a live config source (e.g. `ConfigService`/MemoryStore/DataStore-based
-  flags; **[verify]** available services).
+  or the project's supported live-config source. Verify service availability,
+  budgets, fallback behavior, and persistence requirements before choosing one.
 - Ship event code dormant ahead of time, enable by date.
 
 ## Safe rollout
 
-- Test in a private or test place first with production-like data.
+- Test in a private/test place with synthetic or sanitized representative
+  data; do not risk production saves.
 - Use migration-safe data changes: new fields with defaults, never repurpose
   old fields.
 - Have a kill switch for new features.

@@ -30,14 +30,12 @@ spending that changes nothing visible, or progression the player can't feel.
 - **Meta (days/weeks):** collection completion, rebirth, rare variants,
   events.
 
-## The current market: base-and-collect
+## Optional genre lens: base-and-collect
 
-The highest-earning Roblox games right now sit in a narrow niche: simulators
-and tycoons where the player **leaves a base, gets a thing, and brings it
-back**. Under the hood most of the hits are the same game. They swap out a
-few building blocks, and the blocks they change are the ones that set them
-apart. Design by choosing each block on purpose, not by inventing everything
-from scratch.
+This lens applies to simulators/tycoons where the player **leaves a base,
+gets a thing, and brings it back**. It is not a claim about current revenue
+leaders or a requirement for other genres. Choose relevant blocks deliberately;
+use current evidence for market claims.
 
 ## Game anatomy: the building blocks
 
@@ -152,11 +150,9 @@ that deepen a collection without new base content:
 3. **Innovate where it matters most: fantasy and unique mechanic first.**
    Keep the proven frame (core loop, RNG, level design) unless you have a
    reason to change it.
-4. **Size the ambition.** The source heuristic: changing roughly 20% of a
-   proven reference, in the blocks that matter, is enough for a solid
-   small-to-mid game. A much higher ceiling comes from **stacking several
-   researched innovations**, such as a new fantasy plus a new mechanic plus
-   new level design plus a different kind of tension.
+4. **Size the ambition.** Prototype meaningful differences and test them. There is no validated
+   percentage of changes that predicts success; research, playtests,
+   execution quality, and audience fit matter.
 5. **Every change must be meaningful,** felt in play and backed by research,
    not a reskin. A theme swap with an identical verb is not an innovation.
 

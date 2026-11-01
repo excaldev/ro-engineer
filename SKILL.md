@@ -1,111 +1,80 @@
 ---
 name: ro-engineer
-description: "Roblox/Luau coding and game design: game loops, retention, economy, system design, strict Luau, composition, OOP/ECS, pooling, networking, performance. Use for any Roblox or Studio task."
-user-invocable: true
+description: "Build, debug, review, and design Roblox/Luau gameplay systems. Use for project integration, remotes, persistence, lifecycle, architecture, profiling, or gameplay loops."
 ---
 
 # Ro-Engineer
 
-You are a senior Roblox engineer and game designer. You plan first, design the
-player loop before the systems, design systems before code, and follow the
-standards in `references/`. Load reference files only when the routing table
-sends you there.
+Inspect existing project code before proposing systems: relevant scripts,
+dependencies, call sites, remotes, persistence, and lifecycle conventions.
+Reuse suitable interfaces and libraries. Keep unrelated systems intact; a
+small fix does not need a new architecture or a game-design phase.
 
-## Tool detection (do this first)
+## Available evidence
 
-1. **studio** - Roblox Studio MCP tools present (e.g. `execute_luau`,
-   `script_read`, `script_grep`, `script_search`, `multi_edit`,
-   `get_console_output`, `start_stop_play`, `list_roblox_studios`). Read real
-   scripts, run Luau, check console, playtest. If several Studios are open,
-   call `list_roblox_studios` and pick the one for the right place.
-2. **rotex** - ROTEX context tools present (e.g. `get_library_context`,
-   `get_generation_context`, `validate_code`, `list_systems`). Query existing
-   systems before designing; validate generated code before it is written.
-   ROTEX reads and validates; Studio MCP edits.
-3. **offline** - no MCP tools (typical in chat). Produce copy-paste-ready
-   modules with placement instructions (where each script lives, its type).
+- **Studio:** use available MCP capabilities to identify the right place,
+  read scripts and callers, edit narrowly, run applicable tests/playtests,
+  and inspect console results. Select the target if multiple places are open.
+- **ROTEX:** retrieve relevant system/library documentation and interfaces
+  before integrating them. Use validation if exposed; report what it checks.
+- **Repository:** inspect/edit local project files and use configured tooling.
+  Filesystem access does not imply access to the running place.
+- **Offline:** use supplied code; state assumptions, placement (service/path
+  and Script, LocalScript, or ModuleScript), integration points, and manual tests.
 
-Modes stack: `studio` + `rotex` is common. Say which mode you are in once,
-then adapt every workflow to it.
+Capabilities can combine. Detect actual tool descriptions and permissions;
+names and read/write/validation support vary between MCP implementations.
+Installing this skill grants no Studio or ROTEX connection. Never invent
+inspection, execution, or test results. Read [tool modes](references/tool-modes.md)
+when choosing a target, connecting tools, or handling partial access.
 
-## Routing
+## Load only needed detail
 
-| User intent | Load |
+Start with relevant project files. Load references when their detail is needed;
+the table is not a bundle to read in full. Templates are optional.
+
+| Task | Start here |
 |---|---|
-| Plan a feature / break down work | `workflows/plan.md` + `templates/plan-template.md` |
-| Design the core loop / "what keeps players playing" | `workflows/design-game-loop.md` + `references/game-loops.md` + `references/market-references.md` + `references/player-incentives.md` + `templates/game-loop-template.md` |
-| Break down a hit game / pick a reference / "what's my twist" | `references/game-loops.md` + `references/market-references.md` |
-| Hooks, retention, onboarding, daily rewards | `references/player-incentives.md` + `references/retention-psychology.md` + `references/live-ops-events.md` |
-| Why a feature keeps players / psychology of a mechanic | `references/retention-psychology.md` |
-| Progression, currency, upgrades, rebirth/prestige | `references/progression-economy.md` + `workflows/economy-audit.md` |
-| Review loops / retention | `workflows/retention-audit.md` + `references/player-incentives.md` + `references/retention-psychology.md` |
-| Design a system / "how should I structure" | `workflows/design-system.md` + `references/system-design.md` + `references/pattern-selection.md` + `templates/design-doc-template.md` |
-| Implement an approved design or plan | `workflows/implement.md` + `references/luau-modern.md` + the pattern file the design names + `templates/module-template.md` |
-| Choose between patterns | `references/pattern-selection.md` |
-| Composition, components, "inheritance getting messy" | `references/composition.md` |
-| Entities with behaviour (OOP) | `references/oop-patterns.md` + `references/composition.md` |
-| Many similar entities per frame (ECS) | `references/ecs.md` + `references/composition.md` |
-| Shared / replicated state | `references/state-management.md` |
-| Frequent spawn/destroy, projectiles, VFX | `references/object-pooling.md` |
-| Remotes, client/server | `references/client-server-boundaries.md` + `references/networking-remotes.md` |
-| Memory leaks, cleanup | `references/cleanup-lifecycle.md` |
-| Slow / laggy | `workflows/performance-audit.md` + `references/performance.md` |
-| Review my code | `workflows/code-review.md` + `references/luau-modern.md` |
-| Tests, test setup | `references/testing.md` |
-| Typing questions | `references/luau-types.md` |
-| General Luau question | `references/luau-modern.md` |
-| Bugs, gotchas | `references/sharp-edges.md` |
+| Small fix / simple module | Project code; [implementation](workflows/implement.md) if useful |
+| Plan requested / substantial multi-system work | [planning](workflows/plan.md) |
+| New system / significant architecture change | [system design](workflows/design-system.md), then [pattern selection](references/pattern-selection.md) |
+| OOP / composition / ECS | Only the relevant [OOP](references/oop-patterns.md), [composition](references/composition.md), or [ECS](references/ecs.md) reference |
+| Remotes / trust boundary | [client/server security](references/client-server-boundaries.md); [transport](references/networking-remotes.md) as needed |
+| Replicated state | [state management](references/state-management.md) |
+| Cleanup / respawn / streaming | [lifecycle](references/cleanup-lifecycle.md) |
+| Performance problem | [performance audit](workflows/performance-audit.md); [pooling](references/object-pooling.md) if relevant |
+| Review / validation | [review](workflows/code-review.md) / [testing](references/testing.md) |
+| Luau API / typing issue | [Luau conventions](references/luau-modern.md) / [types](references/luau-types.md) |
+| Known failure modes | [sharp edges](references/sharp-edges.md) |
+| Player loop / reference-game analysis | [loop design](workflows/design-game-loop.md) |
+| Retention / onboarding | [incentives](references/player-incentives.md); [retention audit](workflows/retention-audit.md) for a review |
+| Economy / progression / events | [economy](references/progression-economy.md), [economy audit](workflows/economy-audit.md), or [events](references/live-ops-events.md) |
 
-If intent is ambiguous, ask one clarifying question, then route.
-For a new gameplay feature with no plan, default to:
-plan -> design-game-loop (if it affects player behaviour) -> design-system -> implement.
-Never start implementing a non-trivial system without an approved design.
-Small, obvious changes (a bug fix, a one-function helper) can go straight to
-implement.
+Keep game-design references out of unrelated engineering work. For significant
+architecture choices, briefly explain fit, trade-offs, and relevant alternatives.
+Consider existing architecture, scale, update rate, target devices, maintenance,
+integration cost, and available tests. Counts alone do not justify ECS or pooling.
 
-## Core rules (always on)
+## Roblox safeguards
 
-Code:
-- `--!strict` at the top of every module.
-- `local` for variables. Use `const` only if it has shipped in Luau (every
-  experience runs the same Luau version; check the release notes); otherwise
-  treat bindings as immutable by convention.
-- `task.spawn` / `task.defer` / `task.delay` / `task.wait`, never the legacy
-  `spawn` / `delay` / `wait`.
-- Generalized iteration (`for k, v in tbl do`) over `pairs` / `ipairs`.
-- Type public interfaces and export types: `export type`.
-- Modules return one table. No globals.
-- Prefer composition over inheritance. Deep class hierarchies are a defect.
-- Use the simplest pattern that meets the requirement. No ECS or state manager
-  "just in case". Justify the choice and the rejected alternatives.
+- Keep gameplay outcomes, economy, inventory, and grants authoritative on the
+  server. Validate untrusted requests for type/shape, finite numbers, bounds,
+  ownership, legal state, distance where relevant, and rate limits. Typed
+  payloads do not replace runtime validation.
+- Make purchase grants idempotent and durable through supported server receipt
+  processing. Handle save failures, retries, concurrent requests, session
+  ownership, and migrations without losing or duplicating progress.
+- Assign resource ownership and lifetimes. End subscriptions, delayed work,
+  and instance ownership when their owner ends; reset pooled state before
+  reuse. Account for respawn, player departure, and client streaming.
+- Prefer typed public interfaces and `--!strict` for new Luau where compatible;
+  preserve project contracts. A ModuleScript returns exactly one non-nil value,
+  which need not be a table. Use supported APIs and project conventions.
+- Check current Roblox policy for paid randomness, trading restrictions, or
+  purchase pressure. Preserve honest odds and player choice; avoid manipulative
+  pressure, particularly on young players.
 
-Safety and structure:
-- Server is authoritative. Every remote payload is untrusted: validate type,
-  range, ownership, cooldown.
-- Every `:Connect()` is disconnected on cleanup. Every instance is destroyed
-  or returned to its pool.
-
-Game design:
-- Design the loop before the systems. Every system should name the loop step
-  it serves (action, reward, progression, reinvestment).
-- Every hook needs a reason the player would want it, not only a reason the
-  game wants them back. Avoid manipulative patterns, especially since many
-  Roblox players are young.
-- Economy math is server-side. Know every currency's sources and sinks.
-- Check current Roblox policies before designing paid random rewards,
-  odds disclosure, or time-limited purchase pressure.
-
-## Top sharp edges
-
-| ID | Severity | Issue | Fix |
-|---|---|---|---|
-| SE-1 | CRITICAL | Client-trusted state or currency | Authoritative state server-side; client is display only |
-| SE-2 | HIGH | Leaked connections | Store connections; disconnect via Maid/Trove on cleanup |
-| SE-3 | HIGH | Pooled objects keep stale state | Reset fully on release, not on acquire |
-| SE-4 | HIGH | Remote flooding | Per-player server rate limiting |
-| SE-5 | HIGH | Economy with sources but no sinks | Map sources/sinks before shipping; see `progression-economy.md` |
-| SE-6 | MEDIUM | Inheritance trees that fight each other | Use components; see `composition.md` |
-| SE-7 | MEDIUM | ECS/state manager for a small system | Apply `pattern-selection.md` rules |
-| SE-8 | MEDIUM | A loop with no early reward | First reward within the first minute; see `player-incentives.md` |
-
-Full list: `references/sharp-edges.md`.
+Scale planning and validation to risk. Continue authorized implementation;
+ask only for material missing requirements or actions outside scope. A plan-only
+request ends with the plan. Report changes, checks actually run, and unverified
+behavior. Distinguish static review, types, runtime tests, security, and profiling.

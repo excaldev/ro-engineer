@@ -1,165 +1,99 @@
 <p align="center">
-  <img src="assets/banner.png" alt="ro-engineer v1: teach your AI agent to write performant Roblox code" width="100%">
+  <img src="assets/banner-v1.0.1.png" alt="ro-engineer v1.0.1: Better context. Better Roblox code." width="100%">
 </p>
 
-# ro-engineer
+# ro-engineer v1.0.1
 
-An agent skill that teaches Claude to plan, design and write Roblox games the
-way a senior Roblox engineer and game designer would. It designs the player
-loop before the systems and the systems before the code, and it writes
-modern, strict, performant Luau.
+Project-aware Roblox/Luau engineering for Claude Code, Codex, and supported
+ChatGPT environments. Inspect existing systems, choose architecture that fits,
+protect server boundaries, and validate actual behavior. Optional game-design
+references cover loops, onboarding, economy, and fair retention.
 
-One router (`SKILL.md`) sends the model to small reference files that load
-only when needed, so the skill stays cheap on context while covering a lot of
-ground.
+One canonical `SKILL.md` routes to focused references. Small fixes need no
+mandatory design document; ECS and pooling are conditional choices. The skill
+does not install libraries, connect MCP, or grant Roblox Studio access.
 
-## What's inside
+## Install and use
 
-**Engineering**
-- Modern Luau and strict typing (`--!strict`, `export type`, generics, the
-  `task` library)
-- Pattern selection: plain modules vs. state managers vs. object pooling vs.
-  OOP vs. ECS, with decision rules
-- Composition in OOP and ECS, a hybrid approach, and a migration path
-- Object pooling, state management, cleanup and lifecycle (Trove/Maid)
-- Client/server boundaries, remote validation and rate limiting
-- Performance auditing, testing, and a severity-rated list of sharp edges
-
-**Game design**
-- Game anatomy for today's base-and-collect hits: fantasy, unique mechanic,
-  RNG timing, level design, tension, progression and collection
-- A dated market snapshot that breaks six hit games down block by block
-- Retention psychology mapped to concrete in-game features, with fair vs.
-  manipulative versions
-- Player incentives, onboarding, progression and economy, live ops
-
-**Workflows**, each with an explicit stop point for approval:
-
-```
-plan -> design-game-loop -> design-system -> implement
-```
-
-Plus code review, performance, retention and economy audits.
-
-## Install
-
-### Claude Code (plugin, recommended)
-
-```
-/plugin install ro-engineer --marketplace excaldev/ro-engineer
-```
-
-Or add the marketplace first, then install:
-
-```
-/plugin marketplace add excaldev/ro-engineer
-/plugin install ro-engineer@ro-engineer
-```
-
-### Claude Code (plain skill)
-
-Personal, available in every project:
-
-```bash
-git clone https://github.com/excaldev/ro-engineer ~/.claude/skills/ro-engineer
-```
-
-Per project (commit it so your team gets it):
-
-```bash
-git clone https://github.com/excaldev/ro-engineer .claude/skills/ro-engineer
-```
-
-### claude.ai
-
-1. Download `ro-engineer-v1.zip` from the
-   [latest release](https://github.com/excaldev/ro-engineer/releases/latest).
-2. Upload it under **Settings > Capabilities > Skills** (the location may
-   vary by plan).
-
-Skills don't sync across surfaces, so upload again after updating. In chat,
-the skill runs in `offline` mode (see below).
-
-## Usage
-
-Invoke it with `/ro-engineer`, or just ask a Roblox question; the skill
-triggers on Roblox, Luau and Studio tasks.
-
-```
-/ro-engineer design a core loop for a pet-raising game with steal mechanics
-/ro-engineer review this projectile module
-/ro-engineer my server lags when 30 players fire at once
-```
-
-## Modes
-
-The skill detects its environment and adapts:
-
-| Mode | When | Behaviour |
+| Platform | Installation | Verify / invoke |
 |---|---|---|
-| `studio` | Roblox Studio MCP tools available | Reads real scripts, runs Luau, playtests, reads the console |
-| `rotex` | ROTEX MCP tools available | Queries existing systems and libraries, validates generated code |
-| `offline` | No MCP tools (e.g. claude.ai chat) | Copy-paste-ready modules with placement instructions |
+| Claude Code plugin | `/plugin marketplace add excaldev/ro-engineer`, then `/plugin install ro-engineer@ro-engineer` | Find it in `/plugin`; invoke `/ro-engineer:ro-engineer` |
+| Claude standalone | Extract the skill folder into `.claude/skills/` (project) or `~/.claude/skills/` (personal) | Look in the `/` menu; invoke `/ro-engineer` |
+| Codex | Extract into `.agents/skills/` (project) or `~/.agents/skills/` (personal) | Find it in the skills list; invoke `$ro-engineer` |
+| ChatGPT | Use a supported desktop skill/import flow or the generated plugin package where custom plugin upload is enabled | Confirm in Skills/Plugins and select it with `@` |
 
-Modes stack: `studio` + `rotex` is common.
+Use the complete `ro-engineer/` folder, including references, workflows,
+templates, and metadata. Root-level `SKILL.md` in an ordinary project is not
+a universal Codex installation. Use the [v1.0.1 release](https://github.com/excaldev/ro-engineer/releases/tag/v1.0.1):
 
-## Layout
+- [Standalone skill ZIP](https://github.com/excaldev/ro-engineer/releases/download/v1.0.1/ro-engineer-skill-v1.0.1.zip): Claude standalone, Codex, and supported setup import.
+- [OpenAI plugin ZIP](https://github.com/excaldev/ro-engineer/releases/download/v1.0.1/ro-engineer-openai-plugin-v1.0.1.zip): supported ChatGPT custom-plugin installation.
+- [Download checksums](https://github.com/excaldev/ro-engineer/releases/download/v1.0.1/SHA256SUMS.txt): verify that downloaded files match the release packages.
 
+See [installation and platform support](docs/installation.md) for requirements,
+manual paths, installer options, updates, uninstall, availability limits,
+Claude chat upload, and source links.
+
+### ChatGPT installation
+
+**Plugin route:** download the OpenAI plugin ZIP above. Where your account or
+workspace enables custom plugin ZIP uploads, upload it through that flow,
+enable the plugin, and confirm **ro-engineer** appears in Plugins. Start a new
+chat and select it with `@`. The package includes the skill and all its references.
+
+**Desktop setup import:** if you already use a supported Claude setup, install
+the standalone skill in its Claude skills folder, then open ChatGPT desktop
+**Settings > Import**, select that source agent, and include Skills. Review the
+import and confirm ro-engineer appears in Skills before selecting it with `@`.
+
+These routes depend on your client and workspace permissions. Copying files
+into a Codex folder or attaching a ZIP to an ordinary chat is not a universal
+ChatGPT installation method. Studio and ROTEX access require separate connected
+tools; the skill works with supplied code when those tools are unavailable.
+See [OpenAI's skill/import guidance](https://learn.chatgpt.com/docs/build-skills),
+[setup import](https://learn.chatgpt.com/docs/import), and
+[plugin permissions](https://learn.chatgpt.com/docs/enterprise/apps-and-connectors).
+
+Example requests:
+
+```text
+Review this RemoteEvent handler for authorization and duplicate purchases.
+Fix the respawn leak using our existing cleanup helper.
+Diagnose our projectile bottleneck using the profile and existing architecture.
+Design a player loop for this game's audience and prototype scope.
 ```
-SKILL.md                 router: tool detection, routing table, core rules
-references/              one topic per file, loaded only when routed to
-workflows/               phased procedures (plan, game loop, system design, implement, audits)
-templates/               output skeletons for plans, loop docs, design docs and modules
-.claude-plugin/          plugin and marketplace manifests for Claude Code
-assets/                  README images
+
+## Working modes
+
+Studio MCP enables only its exposed place/script/playtest actions. ROTEX can
+supply project/library context and validation when connected. Repository mode
+uses local files and configured tooling; offline mode uses supplied code and
+provides placement and manual checks. Capabilities can combine and vary by
+implementation. See [tool modes](references/tool-modes.md).
+
+## Repository and releases
+
+`SKILL.md`, `references/`, `workflows/`, `templates/`, and `agents/` are the
+shared skill. `.claude-plugin/` provides Claude packaging; `packaging/` holds
+the portable OpenAI plugin manifest. No copied skill tree is maintained.
+Game design stays optional in the same skill because economy and gameplay
+engineering overlap; it is not loaded for unrelated code work.
+
+With Python 3.10+ (standard library only), from the repository root:
+
+```sh
+python scripts/validate.py
+python -m unittest discover -s tests -v
+python scripts/package.py
 ```
 
-## Keep it current
-
-Some content ages quickly. Re-check these periodically:
-
-- Luau features that may have shipped since writing (`const`, new type
-  solver behaviour) against the Luau release notes. All experiences share one
-  Luau version, so this is about release timing, not per-game versions:
-  `references/luau-modern.md`, `references/luau-types.md`.
-- Popular-game snapshot (which hits lead the niche and how they work):
-  `references/market-references.md`.
-- Community library names and maintenance status (ECS, networking, state,
-  cleanup, data).
-- Roblox policies on paid random items, odds disclosure and time-limited
-  offers: `references/player-incentives.md`,
-  `references/retention-psychology.md`, `references/progression-economy.md`.
-
-Add real incidents to `references/sharp-edges.md` as you hit them.
-
-## Releasing
-
-Bump `version` in `.claude-plugin/plugin.json`, add a `CHANGELOG.md` entry,
-then build the claude.ai zip. The zip must have the skill folder at its root
-(`ro-engineer/SKILL.md`):
-
-With `zip` (macOS, Linux, Git Bash with zip installed):
-
-```bash
-mkdir -p dist/stage/ro-engineer && cp -r SKILL.md LICENSE references workflows templates dist/stage/ro-engineer/ && (cd dist/stage && zip -r ../ro-engineer-v1.zip ro-engineer) && rm -rf dist/stage
-```
-
-On Windows PowerShell, avoid `Compress-Archive`: version 5.1 writes
-backslashes into zip paths, which break on other platforms. Use .NET instead:
-
-```powershell
-Add-Type -AssemblyName System.IO.Compression, System.IO.Compression.FileSystem
-New-Item -ItemType Directory -Force dist | Out-Null
-$out = Join-Path (Get-Location) "dist\ro-engineer-v1.zip"; Remove-Item $out -ErrorAction SilentlyContinue
-$root = (Get-Location).Path
-$files = @(Get-Item SKILL.md, LICENSE) + @(Get-ChildItem references, workflows, templates -Recurse -File)
-$zip = [System.IO.Compression.ZipFile]::Open($out, 'Create')
-foreach ($f in $files) {
-  $rel = $f.FullName.Substring($root.Length + 1).Replace('\', '/')
-  [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $f.FullName, "ro-engineer/$rel") | Out-Null
-}
-$zip.Dispose()
-```
+The builder emits versioned standalone-skill and OpenAI plugin ZIPs and a
+SHA-256 list under ignored `dist/`. It uses explicit file allowlists and portable
+ZIP paths. See [release checks](docs/releasing.md). Current platform sources
+were checked on 2026-11-01; live imports and account access must be tested
+separately. Generated `promo/**/png/` folders are ignored; promotional material
+is kept out of the release commit. [Benchmark plan](docs/benchmark.md) defines comparisons without
+claiming unmeasured model-quality or speed gains.
 
 ## License
 

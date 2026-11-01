@@ -9,7 +9,7 @@ objects that are gone.
 |---|---|
 | `RBXScriptConnection` | `:Disconnect()` |
 | Custom signal connections | their disconnect method |
-| Threads from `task.spawn`/`task.delay` | `task.cancel(thread)` |
+| Threads from `task.spawn`/`task.delay` | Cancel pending work when safe; guard callbacks already running |
 | Tweens | `:Cancel()` then drop references |
 | Instances you created | `:Destroy()` or return to pool |
 | Objects with `Destroy` | call it |
@@ -19,7 +19,8 @@ objects that are gone.
 
 ## Use a cleanup helper
 
-Trove (Sleitnick), Maid (Quenty) or Janitor (howmanysmall) collect cleanup
+Reuse the project's cleanup helper where present. Trove (Sleitnick), Maid
+(Quenty) or Janitor (howmanysmall) collect cleanup
 tasks and run them all at once. **[verify]** current versions.
 
 ```lua
@@ -71,12 +72,14 @@ Do not rely on weak tables for Instances you control; clean up explicitly.
   session with players joining and leaving.
 - Play a loop (spawn and die 50 times, join and leave) and check counts
   return to baseline.
-- In `studio` mode, use `execute_luau` to count connections or entries in
-  per-player tables after players leave.
+- With Studio execution, instrument owned connections/subscriptions and
+  per-player tables after departure. Roblox does not expose a general API
+  to enumerate all event connections.
 
 ## Checklist for every new object or system
 
-- [ ] Every `:Connect` stored in a trove or disconnected.
+- [ ] Connections cannot outlive their owner. Instance destruction cleans its
+  own signals; external subscriptions need explicit lifetime cleanup.
 - [ ] Every spawned thread cancellable or bounded.
 - [ ] Every created instance destroyed or pooled.
 - [ ] Per-player data cleared on leave.

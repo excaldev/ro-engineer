@@ -1,6 +1,9 @@
 # Market references (snapshot)
 
-**Snapshot: 2026-10.** Popularity and mechanics change fast. Before relying
+**Historical notes: 2026-10; unverified source analysis.** The original creator
+and game links were not recorded. Treat mechanics and success claims below
+as hypotheses, not evidence of current popularity or revenue. Popularity and
+mechanics change fast. Before relying
 on this, re-check that each game is still performing and still works this
 way. When it goes stale, update the table; the framework in `game-loops.md`
 stays the same.
@@ -86,6 +89,6 @@ The source creator's own game used Steal an Egg as its reference:
 | Tension | PvPvE | same | No |
 | Progression / collection | Faster / pets | same | No |
 
-Two changes in foundation blocks, everything else proven. That's the "about
-20%" version: aimed at a solid mid-size game, not a chart-topper. Compare
-Ride a Pet, which changed four blocks at once.
+This illustrates changing a few building blocks. It does not establish a
+success formula or a safe amount to copy. Verify source games and test an
+original prototype before drawing market conclusions.

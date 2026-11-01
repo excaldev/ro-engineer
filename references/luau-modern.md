@@ -1,105 +1,39 @@
-# Modern Luau
+# Luau conventions and engine behavior
 
-Roblox runs one Luau version for every experience; there is no per-game
-version to pick. Claims marked **[verify]** are about whether a feature has
-shipped yet (features sometimes reach Studio before live servers). Re-check
-them against the Luau release notes (luau.org and the Roblox Creator Hub
-release notes) before relying on them.
+Use the project's checker, formatter, module interfaces, and supported runtime.
+Do not migrate unrelated code for style alone.
 
-## File header
-
-```lua
---!strict
-```
-
-Every module. Use `--!nonstrict` only for legacy code you are migrating, and
-leave a comment saying why.
-
-## Bindings
-
-- Always `local`. No globals; strict mode flags them.
-- `const` bindings: **[verify]** check the release notes for whether a
-  `const` keyword has shipped. If not, use `local` and treat values as
-  immutable by convention (UPPER_SNAKE for module-level constants).
-- Freeze shared config tables: `table.freeze(CONFIG)` (shallow; freeze nested
-  tables too if they are shared).
-
-## Syntax worth using
-
-| Feature | Example |
+| Category | Guidance |
 |---|---|
-| Generalized iteration | `for key, value in tbl do` |
-| String interpolation | `` `{player.Name} has {coins} coins` `` |
-| If-expressions | `local label = if n == 1 then "item" else "items"` |
-| Compound assignment | `count += 1`, `name ..= "!"` |
-| `continue` | inside loops |
-| Floor division | `7 // 2 == 3` |
-| Typed varargs | `function log(...: string)` |
-| Generics | `function first<T>(list: { T }): T?` |
+| Engine requirement | ModuleScripts return exactly one non-nil value; a function is valid. Require caches separately per environment, not shared state across client/server. Avoid yielding cyclic requires. |
+| Type-checking convention | Prefer `--!strict` and typed public boundaries for new code. Preserve legacy file modes unless migration is in scope. |
+| Syntax / style | Use scoped bindings. Generalized iteration is idiomatic; `pairs`/`ipairs` remain valid. `ipairs` stops at the first nil; do not change traversal semantics for style. |
+| Scheduling | Prefer `task` APIs to legacy wait/spawn/delay. `task.spawn` resumes immediately; `task.defer` resumes at the end of the current resumption cycle, not necessarily next frame. |
+| Project convention | Module return shape, names, init/start, config layout, and comments should fit the existing project. |
+| Performance choice | Pools, buffers, table preallocation, batched updates, and Actors need workload evidence. |
 
-Generalized iteration replaces `pairs`/`ipairs`. For arrays it iterates
-`1..n` in order like `ipairs`; for dictionaries order is unspecified.
+Match RunService phases to work: render-only work is client-side; physics and
+simulation updates need appropriate phases. Heartbeat is not a deprecated API
+to replace mechanically. Prefer supported `Animator:LoadAnimation` over the
+deprecated Humanoid method when touching animation loading.
 
-## task library
+Roblox-specific hazards:
+- Streaming/replication order makes child lookups optional. Use bounded waits
+  or nil handling; timeout is not proof content will never stream in.
+- Keep untrusted inputs out of dynamic execution. `getfenv`/`setfenv` also
+  inhibit optimizations; use explicit dependencies.
+- Cancellation is not a substitute for lifetime checks on callbacks already
+  executing. Own delayed work and guard effects after teardown.
+- `table.freeze` is shallow; decide whether nested config is actually immutable.
+- Parent new Instances after configuration when appropriate; do not rewrite
+  unrelated creation sites as a mandatory performance fix.
 
-| Use | Instead of |
-|---|---|
-| `task.wait(s)` | `wait(s)` |
-| `task.spawn(fn, ...)` | `spawn(fn)` / `coroutine.wrap(fn)()` for fire-and-forget |
-| `task.defer(fn, ...)` | running something "after this frame's current work" |
-| `task.delay(s, fn, ...)` | `delay(s, fn)` |
-| `task.cancel(thread)` | flags checked in loops |
+Check version-sensitive APIs in current documentation rather than guessing new
+keywords or assuming Studio, local tools, and live runtime features match.
 
-- `task.spawn` runs immediately until the first yield; `task.defer` runs later
-  in the same frame cycle. Use `defer` to avoid re-entrancy in event handlers.
-- Keep the thread returned by `task.delay`/`task.spawn` if you might need to
-  cancel it, and cancel it in cleanup.
-- Prefer event-driven code (`RunService.Heartbeat`, signals) over
-  `while true do task.wait() end` loops.
-
-## Table helpers
-
-- `table.create(n, value?)` preallocates arrays in hot paths.
-- `table.clear(t)` empties a table while keeping its memory (good for reused
-  scratch tables).
-- `table.clone(t)` for shallow copies.
-- `table.freeze(t)` / `table.isfrozen(t)` for config and constants.
-- `table.find(array, value)` for small arrays; use a set (`{ [T]: true }`)
-  for repeated lookups.
-
-## buffer
-
-`buffer` is a fixed-size byte array (`buffer.create`, `buffer.writeu8`,
-`buffer.readf32`, ...). Use it for compact network payloads, serialization and
-large numeric data. Do not use it for ordinary game state.
-
-## Engine APIs to prefer
-
-| Prefer | Over |
-|---|---|
-| `Animator:LoadAnimation` | `Humanoid:LoadAnimation` |
-| Constraint movers (`LinearVelocity`, `AlignPosition`, `AlignOrientation`) | `BodyVelocity`, `BodyPosition`, `BodyGyro` |
-| `Instance.new(class)` then set properties, then `.Parent` last | `Instance.new(class, parent)` |
-| `:Connect` | `:connect` |
-| `workspace:GetServerTimeNow()` for synced time | `tick()` |
-| `os.clock()` for benchmarking | `tick()` |
-| `RunService.PreSimulation` / `PostSimulation` / `PreRender` **[verify names]** | `Stepped` / `Heartbeat` / `RenderStepped` (still work) |
-| `Instance.Destroying` signal | polling `.Parent == nil` |
-| `UnreliableRemoteEvent` for lossy high-rate data | `RemoteEvent` for cosmetic spam |
-| `table.unpack` | `unpack` |
-
-## Avoid
-
-- `getfenv` / `setfenv` / `loadstring`: they disable Luau optimizations.
-- Legacy `spawn`, `delay`, `wait`.
-- Deeply nested anonymous functions in hot paths (allocations per call).
-- String keys built at runtime in hot loops (`"part" .. i`) when an array
-  works.
-- `:: any` casts to silence the type checker. Fix the type or narrow it.
-
-## Performance-minded idioms
-
-- Cache services and frequently used functions in locals at module top.
-- Use `Vector3`, `CFrame` math instead of tables of numbers.
-- Avoid creating closures per frame; create once and reuse.
-- Measure with `os.clock()` deltas or the MicroProfiler before optimizing.
+Sources: [ModuleScript](https://create.roblox.com/docs/reference/engine/classes/ModuleScript),
+[module return values](https://create.roblox.com/docs/scripting/module),
+[Luau syntax](https://luau.org/syntax/),
+[iteration performance](https://luau.org/performance/),
+[task](https://create.roblox.com/docs/reference/engine/libraries/task),
+[RunService](https://create.roblox.com/docs/reference/engine/classes/RunService).

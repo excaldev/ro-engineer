@@ -55,16 +55,24 @@ answer always wins; roll back the visual if rejected.
 
 ## Touched events
 
-`Touched` fires on the side that owns the physics. On the server, validate
+`Touched` is affected by network ownership; a client owner can spoof touches.
+On the server, validate
 that the touching part belongs to a live character and debounce per player.
 Prefer server-side spatial queries (`GetPartBoundsInBox`, `Raycast`) for
 critical checks.
 
 ## Purchases
 
-- Developer products: grant only inside `MarketplaceService.ProcessReceipt`,
+- Developer products: use the project's supported server receipt handler
+  (`MarketplaceService.ProcessReceipt`, or `BindReceiptHandler` where adopted),
   idempotently (record receipt ids), and return `PurchaseGranted` only after
   the grant is saved.
 - Game passes: check ownership on the server with
   `UserOwnsGamePassAsync` (cache it) and handle `PromptGamePassPurchaseFinished`.
 - Never grant on a client message saying "I bought it".
+- Keep receipt recording and durable grants consistent under retries and
+  concurrent servers; do not acknowledge success after a failed save. Avoid
+  yielding between balance checks and deductions without transaction control.
+
+Sources: [network ownership](https://create.roblox.com/docs/physics/network-ownership),
+[receipt processing](https://create.roblox.com/docs/reference/engine/classes/MarketplaceService).

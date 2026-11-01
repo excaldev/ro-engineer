@@ -67,7 +67,9 @@ end)
 ```
 
 A token bucket is smoother than this sliding window for bursty input;
-either is fine. Always clear per-player tables on leave.
+either is fine. Clear per-player limiter state on leave. Apply the full validation contract
+in [client/server security](client-server-boundaries.md); generated schemas
+do not replace server-side authorization or finite-number checks.
 
 ## Bandwidth
 
@@ -97,8 +99,8 @@ either is fine. Always clear per-player tables on leave.
 
 ## RemoteFunction cautions
 
-- Server `OnServerInvoke` must return quickly and never yield on client
-  input.
+- Keep server `OnServerInvoke` work bounded and rate-limited; yielding can
+  occur, but avoid unbounded waits and check/deduct races across yields.
 - Never use `InvokeClient`: a malicious or disconnected client can yield the
   server thread forever or error.
 - Wrap client-side `InvokeServer` calls with error handling; they can fail.

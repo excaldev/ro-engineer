@@ -1,43 +1,23 @@
 # Design: <system>
 
-## Overview
-<What this system does and which loop step it serves.>
+Use only sections relevant to the decision.
 
-## Ownership map
+## Existing project and scope
+<Inspected modules/callers, conventions, reuse, assumptions, changed behavior.>
 
-| State | Owner | Lives on | Replicated how | Persisted |
-|---|---|---|---|---|
-
-## Pattern
-- **Chosen:** 
-- **Why:** 
-- **Rejected:**
-  - <alternative>: <one line why not>
-- **Also:** <pooling / state manager / composition notes>
-
-## Module interfaces
-
-```lua
-export type <Module> = {
-	-- functions
-	-- signals
-}
-```
-
-| Module | Location | Script type | Responsibility |
+## Ownership and interfaces
+| State / interface | Owner / location | Replication / persistence | Compatibility |
 |---|---|---|---|
 
-## Client/server boundary
+## Approach
+<Chosen structure, fit, trade-offs, and plausible alternatives.>
+<Migration boundary and rollback if needed.>
 
-| Remote | Direction | Payload | Validation | Rate limit |
-|---|---|---|---|---|
+## Runtime boundaries
+<Remote intent and validation, resource lifetimes, failure paths as applicable.>
 
-## Performance budget
-- Expected entity counts / update rates:
-- Budget (frame time, network, memory):
+## Validation
+<Expected scale/update rates/devices; checks and evidence needed.>
 
-## Cleanup strategy
-- <Which trove/maid owns which lifetime: player, character, round, object.>
-
-## Open questions
-- 
+## Material open questions
+<Only decisions that affect implementation.>

@@ -1,8 +1,8 @@
 # Workflow: retention-audit
 
-Review an existing game's loops and hooks against player incentives. Load
-`references/game-loops.md`, `references/player-incentives.md` and
-`references/retention-psychology.md`.
+Review an existing game's loops and hooks against player incentives. Start with [incentives](../references/player-incentives.md). Read
+[game loops](../references/game-loops.md) for loop reconstruction and
+[psychology](../references/retention-psychology.md) only for deeper hook analysis.
 
 ## Phases
 

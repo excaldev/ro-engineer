@@ -1,7 +1,6 @@
 # Workflow: economy-audit
 
-Check an economy's balance, pacing and exploitability. Load
-`references/progression-economy.md`.
+Check an economy's balance, pacing and exploitability. Read [economy](../references/progression-economy.md).
 
 ## Phases
 
@@ -21,7 +20,7 @@ Check an economy's balance, pacing and exploitability. Load
    - check-then-deduct races on purchase
    - free loops between conversions (buy/sell, craft/salvage)
    - negative, NaN or huge amounts
-   - product grants outside `ProcessReceipt` or not idempotent
+   - product grants outside supported server receipt processing or not idempotent
 5. **Policy.** Any paid random mechanic, trading of paid items, or
    time-limited offer checked against current Roblox policy
    (`PolicyService` restrictions, odds disclosure).

@@ -1,9 +1,11 @@
 # Workflow: design-game-loop (game designer role)
 
 Design what the player does and why they keep doing it, before any systems.
-Load `references/game-loops.md`, `references/market-references.md` and
-`references/player-incentives.md`; load `references/progression-economy.md`
-for step 7.
+Start with [game loops](../references/game-loops.md). Read
+[market examples](../references/market-references.md) only for reference-game
+analysis, [incentives](../references/player-incentives.md) for onboarding/hooks,
+and [economy](../references/progression-economy.md) for currency/pacing work.
+Psychology detail and the output template are optional; omit irrelevant steps.
 
 ## Phases
 
@@ -11,8 +13,8 @@ for step 7.
    player gets to feel, and the target age range and platform mix (assume
    mobile-heavy unless told otherwise). Note which audience the fantasy
    signals.
-2. **Reference and anatomy.** Pick one reference game that is performing
-   well now (check that `market-references.md` is still current). Fill in the
+2. **Reference and anatomy.** If useful, pick a reference game with current evidence; the historical
+   `market-references.md` notes do not establish popularity. Fill in the
    building blocks for the reference and for this game: fantasy, unique
    mechanic, core loop, RNG source and reveal timing, level design, tension,
    progression axis, collection. Name each change, putting fantasy and unique
@@ -41,8 +43,8 @@ for step 7.
    `design-system`.
 10. **Output** using `templates/game-loop-template.md`.
 
-**Stop and ask for approval.** Do not design systems or write code until the
-loop is approved.
+For a design-only request, return the design. Continue into systems/code when
+already authorized; ask about material unresolved choices or scope changes.
 
 ## In studio / rotex mode
 

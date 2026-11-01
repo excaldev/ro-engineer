@@ -1,71 +1,38 @@
-# Testing
+# Validation and testing
 
-Test the logic that would hurt most if it broke: economy math, inventory
-operations, validation, state transitions, save migrations.
+Match checks to changed behavior and risk. Use existing runners/configuration;
+do not add a new framework for a small fix.
 
-## What to test
-
-| Test type | Good for | How |
+| Evidence | Establishes | Does not establish |
 |---|---|---|
-| Unit tests | Pure functions: pricing, damage formulas, validators, migrations | Test runner in Studio or Lune |
-| Integration tests | Services working together with fake players/data | Test runner in Studio play mode |
-| Playtests | Feel, replication, UI, edge cases | Studio Play / Start Server with multiple clients |
-| Soak tests | Leaks, long-session performance | Run for 30+ min with join/leave cycles |
+| Generated code / static review | Proposed logic and inspected constraints | Execution success |
+| Type checking | Compatibility with configured definitions/checker | Runtime payload safety or engine behavior |
+| Unit tests | Tested logic/edge cases | Real replication, physics, persistence |
+| Studio integration / multiplayer playtest | Observed engine/client/server behavior | All production/device scenarios |
+| Profiling | Measured cost in a recorded workload | Universal speedup |
+| Security checks | Tested attack paths and boundary review | Absence of all exploits |
 
-## Make code testable
+For substantial changes cover relevant cases: purchase with exact/insufficient
+funds, invalid/negative/NaN/infinite values, concurrent spend, duplicate receipt
+retries, save failure/session conflict, migration, respawn, join/leave,
+late-join snapshots, and streaming. Use test data or mocks for persistence;
+do not exercise destructive cases on production saves.
 
-- Keep logic in pure functions that take data and return data. Push Roblox
-  API calls (DataStores, Players, Instances) to thin edges.
-- Inject dependencies (pass the DataStore wrapper in) so tests can use fakes.
-- Keep config in data modules so tests can use small, predictable values.
+Reuse installed tooling. Primary references (checked 2026-11-01):
+- [Jest Lua](https://github.com/jsdotlua/jest-lua): use the project's runner
+  and JestGlobals setup; do not assume bare describe/it/expect globals exist.
+- [TestEZ](https://github.com/Roblox/testez): a Roblox test runner; follow its
+  spec/runner setup instead of mixing Jest and TestEZ conventions.
+- [Lune](https://github.com/lune-org/lune): standalone Luau for compatible
+  logic tests, not a complete Roblox engine or multiplayer simulator.
+- [luau-lsp](https://github.com/JohnnyMorganz/luau-lsp): configure Roblox
+  definitions and the project's sourcemap/module resolution for useful checks.
+  A bare analyzer without engine definitions is not equivalent to Studio.
+- [StyLua](https://github.com/JohnnyMorganz/StyLua) formats and
+  [Selene](https://github.com/Kampfkarren/selene) lints; neither proves runtime
+  correctness. [Rojo](https://rojo.space/docs/) syncs project files.
 
-```lua
---!strict
--- Pure: easy to test.
-local function priceAfterDiscount(base: number, discountPct: number): number
-	local pct = math.clamp(discountPct, 0, 90)
-	return math.floor(base * (100 - pct) / 100)
-end
-```
-
-## Tooling
-
-**[verify]** current status before adopting:
-
-- **Jest Lua** (Roblox's port of Jest): `describe`/`it`/`expect` in Studio.
-- **TestEZ**: older BDD runner, still found in many codebases.
-- **Lune**: standalone Luau runtime; run pure-logic tests from the command
-  line or CI without Studio.
-- **Rojo** to sync files, **Selene** for linting, **StyLua** for formatting,
-  **luau-lsp** for type checking outside Studio.
-
-## Example spec (Jest Lua style)
-
-```lua
-local priceAfterDiscount = require(script.Parent.priceAfterDiscount)
-
-describe("priceAfterDiscount", function()
-	it("applies a percentage discount", function()
-		expect(priceAfterDiscount(100, 25)).toBe(75)
-	end)
-
-	it("caps discount at 90%", function()
-		expect(priceAfterDiscount(100, 200)).toBe(10)
-	end)
-end)
-```
-
-## Economy and validation tests worth writing
-
-- Buying with exactly enough, one short, and with a negative/NaN amount.
-- Concurrent purchase requests do not double-spend.
-- Selling and rebuying cannot generate currency (no free loops).
-- Prestige resets what it should and keeps what it should.
-- Save migration from every previous schema version.
-
-## In studio mode
-
-- Run tests via `execute_luau` and read results with `get_console_output`.
-- Use `start_stop_play` for playtests, then inspect state with
-  `execute_luau`.
-- Every implementation task in a plan names its verification step.
+Use actual exposed Studio/ROTEX capabilities; verify execution context and read
+results. If no runtime is available, report static checks separately and give
+placement plus concrete manual tests. Performance claims need comparable
+before/after workloads; leaks need repeated lifecycle cycles and trend data.
