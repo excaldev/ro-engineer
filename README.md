@@ -3,6 +3,7 @@
 </p>
 
 # ro-engineer v1.0.2
+The repo made for you.
 
 Project-aware Roblox/Luau engineering for Claude Code, Codex, and supported
 ChatGPT environments. Inspect existing systems, choose architecture that fits,
